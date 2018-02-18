@@ -1,6 +1,6 @@
 {
     "name": "rpi-hdmi-touchscreen-driver",
-    "description": "Enable waveshare 5inch HDMI LCD touch feature for raspbian stretch",
+    "description": "Enable waveshare 5inch HDMI LCD (B Rev1.1) LCD touch feature for raspbian stretch",
     "version": "0.0.1",
     "author": "Florent Mazzone",
     "license": "(MIT OR X11)",

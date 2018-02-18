@@ -11,7 +11,7 @@ var screenSize = robot.getScreenSize();
 console.log(screenSize);
 var device;
 
-let c = [15658, 47, -4994720, 276, 8254, -2224856, 65536, 800, 480];
+let tsLibConfigFile = [15658, 47, -4994720, 276, 8254, -2224856, 65536, 800, 480];
 let evenementClic;
 
 function determinerCoordonneesNonCorrigees(data) {
@@ -53,8 +53,8 @@ if (deviceInfo) {
 			return;
 		}
 
-		let dx = (c[2] + c[0] * coordonnees.x + c[1] * coordonnees.y) / c[6];
-		let dy = (c[5] + c[3] * coordonnees.x + c[4] * coordonnees.y) / c[6];
+		let dx = (tsLibConfigFile[2] + tsLibConfigFile[0] * coordonnees.x + tsLibConfigFile[1] * coordonnees.y) / c[6];
+		let dy = (tsLibConfigFile[5] + tsLibConfigFile[3] * coordonnees.x + tsLibConfigFile[4] * coordonnees.y) / c[6];
 		//console.log(coordonnees.x, coordonnees.y, new Date());
 		robot.moveMouse(dx, dy);
 	})
