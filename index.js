@@ -53,8 +53,8 @@ if (deviceInfo) {
 			return;
 		}
 
-		let dx = (tsLibConfigFile[2] + tsLibConfigFile[0] * coordonnees.x + tsLibConfigFile[1] * coordonnees.y) / c[6];
-		let dy = (tsLibConfigFile[5] + tsLibConfigFile[3] * coordonnees.x + tsLibConfigFile[4] * coordonnees.y) / c[6];
+		let dx = (tsLibConfigFile[2] + tsLibConfigFile[0] * coordonnees.x + tsLibConfigFile[1] * coordonnees.y) / tsLibConfigFile[6];
+		let dy = (tsLibConfigFile[5] + tsLibConfigFile[3] * coordonnees.x + tsLibConfigFile[4] * coordonnees.y) / tsLibConfigFile[6];
 		//console.log(coordonnees.x, coordonnees.y, new Date());
 		robot.moveMouse(dx, dy);
 	})
