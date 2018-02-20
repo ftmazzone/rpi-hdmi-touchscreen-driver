@@ -17,7 +17,7 @@ After reboot the rights will be reseted.
 
 ### Calibration
 
-Install [tslib](https://github.com/kergoth/tslib) to get the calibration data. Follow the tutorial from the [rpi-5inch-hdmi-touchscreen-driver](https://github.com/saper-2/rpi-5inch-hdmi-touchscreen-driver#3-install-tslib) github repository to install the latest version.
+Install [tslib](https://github.com/kergoth/tslib) to calibrate the touchscreen. Follow the tutorial from the [rpi-5inch-hdmi-touchscreen-driver](https://github.com/saper-2/rpi-5inch-hdmi-touchscreen-driver#3-install-tslib) github repository to install the latest version.
 
 ## Test & Install
 
@@ -30,5 +30,5 @@ Install [tslib](https://github.com/kergoth/tslib) to get the calibration data. F
 * [node-hid](https://github.com/node-hid/node-hid) to read hidraw devices.
 * [robotjs](https://github.com/octalmage/robotjs) to emulate the mouse movements and the mouse clicks. 
 * [rpi-5inch-hdmi-touchscreen-driver](https://github.com/saper-2/rpi-5inch-hdmi-touchscreen-driver) for the excellent documentation about the interface of this type of touchscreen.
-* [tslib](https://github.com/kergoth/tslib) to calibrate of the touchscreen.
-* [uinput](https://github.com/santigimeno/node-uinput) to calibrate of the touchscreen.
+* [tslib](https://github.com/kergoth/tslib) to calibrate the touchscreen.
+* [uinput](https://github.com/santigimeno/node-uinput) to calibrate the touchscreen.
