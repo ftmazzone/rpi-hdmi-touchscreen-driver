@@ -6,9 +6,15 @@ Enable Waveshare Electronics [5inch HDMI LCD Rev1.1](https://www.waveshare.com/w
 ### Access rights
 
 During calibration, uinput events are generated. Users with no administrative rights will need to temporarily give access to uinput.
-If not already present, change the rights of the following files :
+If not already present, configure the rights to access the hid devices.
 
 ##### Linux
+In the file '/etc/udev/rules.d/99-com.rules', append 'KERNEL=="hidraw*", ATTRS{idVendor}=="0eef", ATTRS{idProduct}=="0005", MODE="0660", GROUP="plugdev"'
+>```bash
+>echo "KERNEL==\"hidraw*\", ATTRS{idVendor}==\"0eef\", ATTRS{idProduct}==\"0005\", MODE=\"0660\", GROUP=\"plugdev\"" >> /etc/udev/rules.d/99-com.rules
+>```
+
+Only for calibration
 >```bash
 >sudo chmod 666 /dev/uinput
 >```
