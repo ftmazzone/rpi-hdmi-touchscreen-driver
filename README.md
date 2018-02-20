@@ -10,7 +10,7 @@ If not already present, change the rights of the following files :
 
 ##### Linux
 >```bash
->sudo chmod 0666 /dev/uinput
+>sudo chmod 666 /dev/uinput
 >```
 
 After reboot the rights will be reseted.
