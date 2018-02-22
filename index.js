@@ -3,7 +3,8 @@ const uinput = require('uinput');
 const robot = require("robotjs");
 const HID = require('node-hid');
 const fs = require('fs')
-let evenementClic;
+let keyPressed = 0, rightKeyPressed = 0, lastCoordinates, keyPressedDown = new Date();
+let keyUpEvent;
 let calibrationMode = true;
 let device;
 
@@ -11,7 +12,7 @@ let device;
 //sudo chmod 666 /dev/uinput
 
 let tsLibConfig = [15658, 47, -4994720, 276, 8254, -2224856, 65536, 800, 480];
-let mouseMoveCallback, mouseButtonClickCallback;
+let handleTouchScreenEvent;
 
 async function initialize() {
 
@@ -62,28 +63,44 @@ Ensure that the current user has the required access rights to \'/dev/uinput\'.\
         const stream = await uinputSetupPromise(setupOptions);
         await uiInputCreatePromise(stream, createOptions);
 
-        mouseMoveCallback = (coordinates) => {
-            uinput.send_event(stream, uinput.EV_ABS, uinput.ABS_X, coordinates.x, function (err) {
-                if (err) {
-                    throw (err);
-                }
-            });
+        handleTouchScreenEvent = (data) => {
 
-            uinput.send_event(stream, uinput.EV_ABS, uinput.ABS_Y, coordinates.y, function (err) {
-                if (err) {
-                    throw (err);
-                }
-            });
-        };
+            if (!keyUpEvent) {
+                clearTimeout(keyUpEvent);
+            }
 
-        mouseButtonClickCallback = () => {
-            uinput.key_event(stream, uinput.BTN_LEFT, function (err) {
-                if (err) {
-                    throw (err);
-                }
-            });
-        };
+            if (0xAA === data[0] && 0x01 === data[1]) {
+                const coordinates = {
+                    x: parseInt(data[2].toString(16).padStart(2, '0') + data[3].toString(16).padStart(2, '0'), 16),
+                    y: parseInt(data[4].toString(16).padStart(2, '0') + data[5].toString(16).padStart(2, '0'), 16)
+                };
 
+                uinput.send_event(stream, uinput.EV_ABS, uinput.ABS_X, coordinates.x, function (err) {
+                    if (err) {
+                        throw (err);
+                    }
+                });
+
+                uinput.send_event(stream, uinput.EV_ABS, uinput.ABS_Y, coordinates.y, function (err) {
+                    if (err) {
+                        throw (err);
+                    }
+                });
+
+                keyPressed = 1;
+            }
+            else if (0xAA === data[0] && 0x00 === data[1] && 1 === keyPressed) {
+                keyUpEvent = setTimeout(() => {
+                    uinput.key_event(stream, uinput.BTN_LEFT, function (err) {
+                        if (err) {
+                            throw (err);
+                        }
+                    });
+                    keyPressed = 0;
+                    keyUpEvent = undefined;
+                }, 1000);
+            }
+        }
     }
     else {
         //Initialize the callbacks to move the mouse pointer using RobotJs
@@ -91,22 +108,56 @@ Ensure that the current user has the required access rights to \'/dev/uinput\'.\
         console.info('Screensize : ', screenSize);
         robot.setMouseDelay(2);
 
-        mouseMoveCallback = (coordinates) => {
-            if (undefined === coordinates) {
-                return;
+        handleTouchScreenEvent = (data) => {
+            if (0xAA === data[0] && 0x01 === data[1]) {
+                let coordinates = {
+                    x: parseInt(data[2].toString(16).padStart(2, '0') + data[3].toString(16).padStart(2, '0'), 16),
+                    y: parseInt(data[4].toString(16).padStart(2, '0') + data[5].toString(16).padStart(2, '0'), 16)
+                };
+                coordinates = {
+                    x: (tsLibConfig[2] + tsLibConfig[0] * coordinates.x + tsLibConfig[1] * coordinates.y) / tsLibConfig[6],
+                    y: (tsLibConfig[5] + tsLibConfig[3] * coordinates.x + tsLibConfig[4] * coordinates.y) / tsLibConfig[6]
+                };
+
+                if (0 === rightKeyPressed) {
+                    robot.moveMouse(coordinates.x, coordinates.y);
+                }
+
+                if (0 === keyPressed && 0 === rightKeyPressed) {
+                    lastCoordinates = coordinates;
+                    keyPressedDown = new Date();
+                    keyPressed = 1;
+                }
+                else if (0 === rightKeyPressed && lastCoordinates && (new Date().getTime() - keyPressedDown.getTime()) > 1000
+                    && Math.sqrt(Math.pow(coordinates.x - lastCoordinates.x, 2) + Math.pow(coordinates.y - lastCoordinates.y, 2)) < 20) {
+                    rightKeyPressed = 1;
+                    robot.mouseClick('right');
+
+                    setTimeout(() => {
+                        rightKeyPressed = 0;
+                        keyPressed = 0;
+                    }, 2000);
+                }
             }
+            else if (keyPressed > 0 && 0 === rightKeyPressed) {
+                if (!keyUpEvent) {
+                    clearTimeout(keyUpEvent);
+                }
+                keyUpEvent = setTimeout(() => {
 
-            coordinates = {
-                x: (tsLibConfig[2] + tsLibConfig[0] * coordinates.x + tsLibConfig[1] * coordinates.y) / tsLibConfig[6],
-                y: (tsLibConfig[5] + tsLibConfig[3] * coordinates.x + tsLibConfig[4] * coordinates.y) / tsLibConfig[6]
-            };
-
-            robot.moveMouse(coordinates.x, coordinates.y);
+                    if (keyPressed <= 2) {
+                        robot.mouseClick();
+                    }
+                    else {
+                        robot.mouseClick('left', true);
+                    }
+                    keyUpEvent = undefined;
+                    keyPressed = 0;
+                }, 500);
+                keyPressed++;
+            }
+            return keyPressed;
         }
-
-        mouseButtonClickCallback = () => {
-            robot.mouseClick();
-        };
     }
 
     return { deviceInfo };
@@ -120,8 +171,8 @@ const startListening = async () => {
         if (info.deviceInfo) {
             device = new HID.HID(info.deviceInfo.path);
             device.on("data", function (data) {
-                getCoordinates(data, mouseMoveCallback, mouseButtonClickCallback);
-            })
+                handleTouchScreenEvent(data);
+            });
         }
     }
     catch (e) {
@@ -132,36 +183,3 @@ const startListening = async () => {
 
 startListening();
 
-function getCoordinates(data, mouseMoveCallback, mouseButtonClickCallback) {
-
-    const mouseClick = detectMouseClick(data, mouseButtonClickCallback);
-
-    if (mouseClick) {
-        return;
-    }
-
-    const coordinates = {
-        x: parseInt(data[2].toString(16).padStart(2, '0') + data[3].toString(16).padStart(2, '0'), 16),
-        y: parseInt(data[4].toString(16).padStart(2, '0') + data[5].toString(16).padStart(2, '0'), 16)
-    };
-    mouseMoveCallback(coordinates)
-
-    return coordinates;
-}
-
-function detectMouseClick(data, mouseButtonClickCallback) {
-    let keyPressed = false;
-    if (0xAA === data[0] && 0x00 === data[1]) {
-        keyPressed = true;
-        if (evenementClic) {
-            clearTimeout(evenementClic);
-        }
-        evenementClic = setTimeout(() => {
-            mouseButtonClickCallback();
-        }, 100);
-    } else if (evenementClic) {
-        clearTimeout(evenementClic);
-    }
-
-    return keyPressed;
-}
