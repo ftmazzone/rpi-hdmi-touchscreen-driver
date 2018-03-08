@@ -33,8 +33,8 @@ Install [tslib](https://github.com/kergoth/tslib) to calibrate the touchscreen. 
 >```
 
 ## Credits
-* [node-hid](https://github.com/node-hid/node-hid) to read hidraw devices.
-* [robotjs](https://github.com/octalmage/robotjs) to emulate the mouse movements and the mouse clicks. 
-* [rpi-5inch-hdmi-touchscreen-driver](https://github.com/saper-2/rpi-5inch-hdmi-touchscreen-driver) for the excellent documentation about the interface of this type of touchscreen.
-* [tslib](https://github.com/kergoth/tslib) to calibrate the touchscreen.
-* [uinput](https://github.com/santigimeno/node-uinput) to calibrate the touchscreen.
+* [node-hid](https://github.com/node-hid/node-hid) to read hidraw devices. - [MIT](https://opensource.org/licenses/MIT)
+* [robotjs](https://github.com/octalmage/robotjs) to emulate the mouse movements and the mouse clicks. - [MIT](https://github.com/octalmage/robotjs/blob/master/LICENSE.md)
+* [rpi-5inch-hdmi-touchscreen-driver](https://github.com/saper-2/rpi-5inch-hdmi-touchscreen-driver) for the excellent documentation about the interface of this type of touchscreen. - [MIT](https://github.com/saper-2/rpi-5inch-hdmi-touchscreen-driver/blob/master/LICENSE)
+* [tslib](https://github.com/kergoth/tslib) to calibrate the touchscreen. - [GNU Lesser General Public License v2.1](https://github.com/kergoth/tslib/blob/master/COPYING)
+* [uinput](https://github.com/santigimeno/node-uinput) to calibrate the touchscreen. - [ISC](https://opensource.org/licenses/ISC)
