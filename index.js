@@ -47,8 +47,8 @@ Ensure that the current user has the required access rights to \'/dev/uinput\'.\
 
     if (calibrationMode) {
         //Initialize the touchscreen uinput events needed for the calibration with tslib (https://github.com/kergoth/tslib)
-        const uinputSetupPromise = util.promisify(uinput.setup);
-        const uiInputCreatePromise = util.promisify(uinput.create);
+        //const uinputSetupPromise = util.promisify(uinput.setup);
+        //const uiInputCreatePromise = util.promisify(uinput.create);
         const setupOptions = { EV_ABS: [uinput.ABS_X, uinput.ABS_Y], EV_KEY: [uinput.BTN_LEFT, uinput.BTN_RIGHT] };
         const createOptions = {
             name: 'virtualtouchscreen',
@@ -60,8 +60,8 @@ Ensure that the current user has the required access rights to \'/dev/uinput\'.\
             }
         };
 
-        const stream = await uinputSetupPromise(setupOptions);
-        await uiInputCreatePromise(stream, createOptions);
+        const uiInput = await uinput.setup(setupOptions);
+        await uiInput.create(createOptions);
 
         handleTouchScreenEvent = (data) => {
 
@@ -75,13 +75,13 @@ Ensure that the current user has the required access rights to \'/dev/uinput\'.\
                     y: parseInt(data[4].toString(16).padStart(2, '0') + data[5].toString(16).padStart(2, '0'), 16)
                 };
 
-                uinput.send_event(stream, uinput.EV_ABS, uinput.ABS_X, coordinates.x, function (err) {
+                uiInput.sendEvent(uinput.EV_ABS, uinput.ABS_X, coordinates.x, function (err) {
                     if (err) {
                         throw (err);
                     }
                 });
 
-                uinput.send_event(stream, uinput.EV_ABS, uinput.ABS_Y, coordinates.y, function (err) {
+                uiInput.sendEvent(uinput.EV_ABS, uinput.ABS_Y, coordinates.y, function (err) {
                     if (err) {
                         throw (err);
                     }
@@ -91,7 +91,7 @@ Ensure that the current user has the required access rights to \'/dev/uinput\'.\
             }
             else if (0xAA === data[0] && 0x00 === data[1] && 1 === keyPressed) {
                 keyUpEvent = setTimeout(() => {
-                    uinput.key_event(stream, uinput.BTN_LEFT, function (err) {
+                    uiInput.keyEvent(uinput.BTN_LEFT, function (err) {
                         if (err) {
                             throw (err);
                         }
