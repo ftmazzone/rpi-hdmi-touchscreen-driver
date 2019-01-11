@@ -25,11 +25,21 @@ After reboot the rights will be reseted.
 
 Install [tslib](https://github.com/kergoth/tslib) to calibrate the touchscreen. Follow the tutorial from the [rpi-5inch-hdmi-touchscreen-driver](https://github.com/saper-2/rpi-5inch-hdmi-touchscreen-driver#3-install-tslib) github repository to install the latest version.
 
-## Test & Install
+## Test
 
 ##### Linux
 >```bash
->node index.js
+>npm start
+>```
+
+## Installation
+
+##### Linux
+* Run the touchscreendriver after X starts by adding a startup script in **_/etc/X11/Xsession.d_**
+
+>```bash
+>echo $'#!/bin/sh\nnode /home/pi/rpi-hdmi-touchscreen-driver/index.js &\n' > /etc/X11/Xsession.d/99wav-touchscreen_driver
+>chmod 755 /etc/X11/Xsession.d/99wav-touchscreen_driver
 >```
 
 ## Credits
