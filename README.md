@@ -1,5 +1,5 @@
 # rpi-hdmi-touchscreen-driver
-Enable Waveshare Electronics [5inch HDMI LCD Rev1.1](https://www.waveshare.com/wiki/5inch_HDMI_LCD_(B)) touch feature for Raspbian Stretch.
+Enable Waveshare Electronics [5inch HDMI LCD Rev1.1](https://www.waveshare.com/wiki/5inch_HDMI_LCD_(B)) touch feature for Raspbian Buster.
 
 ## Prerequisites
 
