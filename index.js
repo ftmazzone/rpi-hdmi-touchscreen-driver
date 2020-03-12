@@ -11,7 +11,7 @@ let device;
 //Use tslib to get calibration data : TSLIB_CONFFILE=/etc/ts.conf TSLIB_CALIBFILE=/etc/pointercal TSLIB_FBDEVICE=/dev/fb0 TSLIB_TSDEVICE=/dev/input/event0 ts_calibrate
 //sudo chmod 666 /dev/uinput
 
-let tsLibConfig = [15658, 47, -4994720, 276, 8254, -2224856, 65536, 800, 480];
+let tsLibConfig = [16319, 43, -7601248, -56, 8325, -1279244, 65536, 800, 480, 0];
 let handleTouchScreenEvent;
 
 async function initialize() {

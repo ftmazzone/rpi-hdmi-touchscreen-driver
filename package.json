@@ -5,12 +5,12 @@
     "author": "Florent Mazzone",
     "license": "(MIT OR X11)",
     "dependencies": {
-        "node-hid": "^0.7.6",
-        "robotjs": "^0.5.1",
+        "node-hid": "^1.2.0",
+        "robotjs": "^0.6.0",
         "uinput": "https://github.com/timstableford/node-uinput.git"
     },
     "engines": {
-        "node": ">=10.0.0"
+        "node": ">=12.0.0"
     },
     "scripts": {
         "start": "node index.js"
